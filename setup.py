@@ -6,7 +6,7 @@ setup(
     version=version,
     author='Akretion',
     author_email='contact@akretion.com',
-    url='https://github.com/akretion/pytelium',
+    url='https://github.com/akretion/pypostelium',
     description='Python library for supporting Point Of Sale Telium payment terminal',
     long_description=open('README.rst').read(),
     license='AGPLv3+',
