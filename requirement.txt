@@ -1,5 +1,5 @@
 simplejson
-curses.ascii
+curses
 serial
 pycountry
 pyserial
