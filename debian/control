@@ -1,0 +1,17 @@
+Source: pypostelium
+Section: admin
+Priority: extra
+Maintainer: Sylvain Calador <sylvain.calador@akretion.com>
+Build-Depends: debhelper (>= 9), python-setuptools, python-all
+X-Python-Version: >= 2.4
+VCS-Git: git://github.com/akretion/pypostelium.git
+VCS-Browser: https://github.com/akretion/pypostelium
+Standards-Version: 1.0.0
+Homepage: https://github.com/akretion/pywebdriver
+
+Package: python-pypostelium
+Architecture: all
+Depends: python, python-simplejson, python-serial, python-unidecode
+ ${misc:Depends},
+Description: Python Libraries for interacting with Point of Sale
+ Telium Payment Terminal

@@ -1,0 +1,5 @@
+simplejson
+curses.ascii
+serial
+pycountry
+pyserial
