@@ -40,7 +40,9 @@ Association !
 
 Installation
 ============
-* sudo pip install git+https://github.com/akretion/pypostelium.git --upgrade
+```
+sudo pip install git+https://github.com/akretion/pypostelium.git --upgrade
+```
 
 Contributors
 ============
