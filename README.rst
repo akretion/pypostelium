@@ -38,6 +38,12 @@ project of the Odoo Community Association http://odoo-community.org/.
 You are invited to become a member and/or get involved in the
 Association !
 
+Installation
+============
+```
+sudo pip install git+https://github.com/akretion/pypostelium.git --upgrade
+```
+
 Contributors
 ============
 
