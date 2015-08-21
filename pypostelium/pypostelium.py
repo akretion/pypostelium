@@ -218,6 +218,7 @@ class Driver(object):
 
         except Exception, e:
             logger.error('Exception in serial connection: %s' % str(e))
+            raise
         finally:
             if self.serial:
                 logger.debug('Closing serial port for payment terminal')
