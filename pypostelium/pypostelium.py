@@ -32,15 +32,11 @@ from unidecode import unidecode
 from serial import Serial
 import pycountry
 
-from openerp import http
-from openerp.tools.config import config
-
-
 logger = logging.getLogger(__name__)
 
 
 class Driver(object):
-    def __init__(self):
+    def __init__(self, config):
         self.device_name = config.get(
             'telium_terminal_device_name', '/dev/ttyACM0')
         self.device_rate = int(config.get(
