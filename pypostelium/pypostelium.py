@@ -27,6 +27,8 @@ import time
 import logging
 import curses.ascii
 from serial import Serial
+import operator
+import functools
 
 from unidecode import unidecode
 from serial import Serial
@@ -45,7 +47,7 @@ class Driver(object):
 
     def serial_write(self, text):
         assert isinstance(text, str), 'text must be a string'
-        self.serial.write(text)
+        self.serial.write(bytes(text, 'ASCII'))
 
     def initialize_msg(self):
         max_attempt = 3
@@ -73,7 +75,7 @@ class Driver(object):
         ascii_names = curses.ascii.controlnames
         one_byte_read = self.serial.read(1)
         expected_char = ascii_names.index(expected_signal)
-        if one_byte_read == chr(expected_char):
+        if one_byte_read == expected_char.to_bytes(1, byteorder='big'):
             logger.debug("%s received from terminal" % expected_signal)
             return True
         else:
@@ -110,11 +112,10 @@ class Driver(object):
         }
         return data
 
-    def generate_lrc(self, real_msg_with_etx):
-        lrc = 0
-        for char in real_msg_with_etx:
-            lrc ^= ord(char)
-        return lrc
+    def generate_lrc(real_msg_with_etx):
+        if (isinstance(real_msg_with_etx, str)):
+            real_msg_with_etx = real_msg_with_etx.encode('ascii')
+        return functools.reduce(operator.xor, [c for c in real_msg_with_etx])
 
     def send_message(self, data):
         '''We use protocol E+'''
@@ -166,15 +167,15 @@ class Driver(object):
         msg = self.serial.read(size=full_msg_size)
         logger.debug('%d bytes read from terminal' % full_msg_size)
         assert len(msg) == full_msg_size, 'Answer has a wrong size'
-        if msg[0] != chr(ascii_names.index('STX')):
+        if msg[0] != ascii_names.index('STX'):
             logger.error(
                 'The first byte of the answer from terminal should be STX')
-        if msg[-2] != chr(ascii_names.index('ETX')):
+        if msg[-2] != ascii_names.index('ETX'):
             logger.error(
                 'The byte before final of the answer from terminal '
                 'should be ETX')
         lrc = msg[-1]
-        computed_lrc = chr(self.generate_lrc(msg[1:-1]))
+        computed_lrc = self.generate_lrc(msg[1:-1])
         if computed_lrc != lrc:
             logger.error(
                 'The LRC of the answer from terminal is wrong')
