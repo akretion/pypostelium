@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from setuptools import setup, find_packages
 version = open('VERSION').read().strip()
 
@@ -7,11 +8,11 @@ setup(
     author='Akretion',
     author_email='contact@akretion.com',
     url='https://github.com/akretion/pypostelium',
-    description='Python library for supporting Point Of Sale Telium payment terminal',
+    description='Python library for supporting Point of Sale Telium payment terminal',
     long_description=open('README.rst').read(),
     license='AGPLv3+',
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'Topic :: Software Development :: User Interfaces',
         'License :: OSI Approved :: GNU Affero General Public License v3',
