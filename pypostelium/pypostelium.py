@@ -97,15 +97,16 @@ class Driver(object):
         except:
             logger.error("Currency %s is not recognized" % cur_iso_letter)
             return False
+        payment_type = str(payment_info_dict.get('payment_type')) or '0'
         data = {
             'pos_number': str(1).zfill(2),
             'answer_flag': '0',
-            'transaction_type': '0',
+            'transaction_type': payment_type,
             'payment_mode': payment_mode,
             'currency_numeric': cur_numeric.zfill(3),
             'private': ' ' * 10,
-            'delay': 'A011',
-            'auto': 'B010',
+            'delay': str(payment_info_dict.get('delay')) or 'A011',
+            'auto': str(payment_info_dict.get('auto')) or 'B010',
             'amount_msg': ('%.0f' % (amount * 100)).zfill(8),
         }
         return data
@@ -189,16 +190,23 @@ class Driver(object):
         assert isinstance(payment_info_dict, dict), \
             'payment_info_dict should be a dict'
         logger.debug("payment_info_dict = %s" % payment_info_dict)
+        answer = False
         try:
             logger.debug(
                 'Opening serial port %s for payment terminal with baudrate %d'
-                % (self.device_name, self.device_rate))
+                % (self.device_name , self.device_rate))
             # IMPORTANT : don't modify timeout=3 seconds
             # This parameter is very important ; the Telium spec say
             # that we have to wait to up 3 seconds to get LRC
+            # In case we wait for the answer once the transaction is over
+            # We need to wait a lot more.
+            timeout = 3
+            if payment_info_dict.get('delay', '') == 'A010' and \
+                    payment_info_dict.get('max_waiting_time'):
+                timeout = payment_info_dict.get('max_waiting_time')
             self.serial = Serial(
                 self.device_name, self.device_rate,
-                timeout=3)
+                timeout=timeout)
             logger.debug('serial.is_open = %s' % self.serial.isOpen())
             if self.initialize_msg():
                 data = self.prepare_data_to_send(payment_info_dict)
@@ -211,7 +219,7 @@ class Driver(object):
                     logger.info("Now expecting answer from Terminal")
                     if self.get_one_byte_answer('ENQ'):
                         self.send_one_byte_signal('ACK')
-                        self.get_answer_from_terminal(data)
+                        answer = self.get_answer_from_terminal(data)
                         self.send_one_byte_signal('ACK')
                         if self.get_one_byte_answer('EOT'):
                             logger.info("Answer received from Terminal")
@@ -223,3 +231,4 @@ class Driver(object):
             if self.serial:
                 logger.debug('Closing serial port for payment terminal')
                 self.serial.close()
+        return answer
