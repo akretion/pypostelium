@@ -3,9 +3,12 @@ Hardware Telium Payment Terminal
 
 This module adds support for credit card reader and checks printers
 using Telium protocol in the Point of Sale. This module is designed to
-be installed on the *POSbox* (i.e. the proxy on which the USB devices
-are connected) and not on the main Odoo server. On the main Odoo server,
-you should install the module *pos_payment_terminal*.
+be installed:
+
+- either on the **POSbox** (i.e. the proxy on which the USB devices are connected) and not on the main Odoo server. 
+- either as **pywebdriver** dependency (also in Akretion repository)
+
+On the main Odoo server, you should install the module **pos_payment_terminal**.
 
 The configuration of the hardware is done in the configuration file of
 the Odoo server of the POSbox. You should add the following entries in
@@ -17,17 +20,31 @@ the configuration file:
 The Telium protocol is used by Ingenico and Sagem payment terminals. It
 is based on the Concert protocol, so it can probably work with payment
 terminals from other brands. This module implements the protocol E+ (and
-not the protocol E), so it requires a Telium Manager version 37783600
-or superior. To get the version of the Telium Manager on an Ingenico
-terminal press F > 0-TELIUM MANAGER > 2-Consultation > 4-Configuration
-> 2-Software > 1-TERMINAL > On Display > Telium Manager and then read
-the field *M20S*.
+not the protocol E), so it requires a Telium Manager **version 37783600**
+or superior.
+
+To get the version of the Telium Manager on an Ingenico
+terminal: 
+
+::
+
+  press F > 0-TELIUM MANAGER > 2-Consultation > 4-Configuration
+  > 2-Software > 1-TERMINAL > On Display > Telium Manager 
+
+and then read the field **M20S**.
 
 You will need to configure your payment terminal to accept commands
-from the POS. On an Ingenico terminal press F > 0-TELIUM MANAGER >
-5-Initialization > 1-Parameters > Cash Connection and then select *On*
-and then *USB*. After that, you should reboot the terminal.
+from the POS. On an Ingenico terminal 
+
+::
+
+  press F > 0-TELIUM MANAGER >
+  5-Initialization > 1-Parameters > Cash Connection and then select *On*
+  and then **USB** or **USB Base** according to used cable. 
+  
+After that, you should reboot the terminal (normally by clicking simultaneously on keys `yellow` and `#`).
 This module has been successfully tested with:
+
 * Ingenico EFTSmart4S
 * Ingenico EFTSmart2 2640 with Telim Manager version 37784503
 * Ingenico i2200 cheque reader and writer
@@ -40,9 +57,10 @@ Association !
 
 Installation
 ============
-```
-sudo pip install git+https://github.com/akretion/pypostelium.git --upgrade
-```
+
+::
+
+  sudo pip install git+https://github.com/akretion/pypostelium.git --upgrade
 
 Contributors
 ============
