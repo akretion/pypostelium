@@ -1,2 +1,1 @@
-from . import pypostelium
-from pypostelium import Driver
+from .pypostelium import Driver
