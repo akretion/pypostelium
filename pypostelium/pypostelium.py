@@ -44,7 +44,7 @@ class Driver(object):
 
     def serial_write(self, text):
         assert isinstance(text, str), 'text must be a string'
-        self.serial.write(text)
+        self.serial.write(text.encode('ascii'))
 
     def initialize_msg(self):
         max_attempt = 3
@@ -70,7 +70,7 @@ class Driver(object):
 
     def get_one_byte_answer(self, expected_signal):
         ascii_names = curses.ascii.controlnames
-        one_byte_read = self.serial.read(1)
+        one_byte_read = self.serial.read(1).decode('ascii')
         expected_char = ascii_names.index(expected_signal)
         if one_byte_read == chr(expected_char):
             logger.debug("%s received from terminal" % expected_signal)
@@ -167,7 +167,7 @@ class Driver(object):
     def get_answer_from_terminal(self, data):
         ascii_names = curses.ascii.controlnames
         full_msg_size = 1+2+1+8+1+3+10+1+1
-        msg = self.serial.read(size=full_msg_size)
+        msg = self.serial.read(size=full_msg_size).decode('ascii')
         logger.debug('%d bytes read from terminal' % full_msg_size)
         assert len(msg) == full_msg_size, 'Answer has a wrong size'
         if msg[0] != chr(ascii_names.index('STX')):
