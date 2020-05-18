@@ -62,6 +62,13 @@ Installation
 
   sudo pip install git+https://github.com/akretion/pypostelium.git --upgrade
 
+Changelog
+=========
+
+* Version 0.0.3 dated 2020-05-18
+
+  * Python3 support
+
 Contributors
 ============
 

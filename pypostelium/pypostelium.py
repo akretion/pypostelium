@@ -92,12 +92,15 @@ class Driver(object):
         cur_decimals = payment_info_dict.get('currency_decimals', 2)
         cur_fact = 10**cur_decimals
         cur_iso_letter = payment_info_dict['currency_iso'].upper()
-        try:
-            cur = pycountry.currencies.get(alpha_3=cur_iso_letter)
-            cur_numeric = str(cur.numeric)
-        except:
-            logger.error("Currency %s is not recognized" % cur_iso_letter)
-            return False
+        if cur_iso_letter == 'EUR':  # Small speed-up
+            cur_numeric = '978'
+        else:
+            try:
+                cur = pycountry.currencies.get(alpha_3=cur_iso_letter)
+                cur_numeric = str(cur.numeric)
+            except Exception:
+                logger.error("Currency %s is not recognized" % cur_iso_letter)
+                return False
         data = {
             'pos_number': str(1).zfill(2),
             'answer_flag': '0',
@@ -217,7 +220,7 @@ class Driver(object):
                         if self.get_one_byte_answer('EOT'):
                             logger.info("Answer received from Terminal")
 
-        except Exception, e:
+        except Exception as e:
             logger.error('Exception in serial connection: %s' % str(e))
             raise
         finally:
