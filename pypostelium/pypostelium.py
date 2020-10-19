@@ -40,6 +40,8 @@ class Driver(object):
             'telium_terminal_device_name', '/dev/ttyACM0')
         self.device_rate = int(config.get(
             'telium_terminal_device_rate', 9600))
+        self.retry_count = int(config.get(
+            'telium_terminal_retry_count', 0))
         self.serial = False
 
     def serial_write(self, text):
@@ -47,7 +49,7 @@ class Driver(object):
         self.serial.write(text.encode('ascii'))
 
     def initialize_msg(self):
-        max_attempt = 3
+        max_attempt = self.retry_count + 1
         attempt_nr = 0
         while attempt_nr < max_attempt:
             attempt_nr += 1
@@ -193,6 +195,7 @@ class Driver(object):
         assert isinstance(payment_info_dict, dict), \
             'payment_info_dict should be a dict'
         logger.debug("payment_info_dict = %s" % payment_info_dict)
+        res = False
         try:
             logger.debug(
                 'Opening serial port %s for payment terminal with baudrate %d'
@@ -207,10 +210,11 @@ class Driver(object):
             if self.initialize_msg():
                 data = self.prepare_data_to_send(payment_info_dict)
                 if not data:
-                    return
+                    return res
                 self.send_message(data)
                 if self.get_one_byte_answer('ACK'):
                     self.send_one_byte_signal('EOT')
+                    res = True
 
                     logger.info("Now expecting answer from Terminal")
                     if self.get_one_byte_answer('ENQ'):
@@ -222,8 +226,8 @@ class Driver(object):
 
         except Exception as e:
             logger.error('Exception in serial connection: %s' % str(e))
-            raise
         finally:
             if self.serial:
                 logger.debug('Closing serial port for payment terminal')
                 self.serial.close()
+        return res
