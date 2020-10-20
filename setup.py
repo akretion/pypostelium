@@ -8,7 +8,7 @@ setup(
     author='Akretion',
     author_email='contact@akretion.com',
     url='https://github.com/akretion/pypostelium',
-    description='Python library for supporting Point of Sale Telium payment terminal',
+    description='Python library for supporting Point of Sale payment terminal with Concert protocol',
     long_description=open('README.rst').read(),
     license='AGPLv3+',
     classifiers=[
@@ -17,8 +17,9 @@ setup(
         'Topic :: Software Development :: User Interfaces',
         'License :: OSI Approved :: GNU Affero General Public License v3',
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.8',
     ],
-    keywords='telium payment terminal',
+    keywords='Concert Telium payment terminal',
     packages=find_packages(),
     install_requires=[r.strip() for r in
                       open('requirement.txt').read().splitlines()],
