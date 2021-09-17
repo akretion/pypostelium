@@ -27,8 +27,8 @@ import time
 import logging
 import curses.ascii
 from serial import Serial
+import serial.tools.list_ports
 
-from serial import Serial
 import pycountry
 
 logger = logging.getLogger(__name__)
@@ -231,3 +231,26 @@ class Driver(object):
                 logger.debug('Closing serial port for payment terminal')
                 self.serial.close()
         return res
+
+    def get_status(self, **kwargs):
+        # When I use Odoo POS v8, it regularly goes through that code
+        # and sends 999.99 to the credit card reader !!!
+        # Si I comment the line below -- Alexis
+        # telium_driver.push_task('transaction_start', json.dumps(
+        #    self.get_payment_info_from_price(999.99, 'card'), sort_keys=True))
+        # TODO Improve : Get the real model connected
+        status = "disconnected"
+        messages = []
+        connected_comports = [tuple(p) for p in list(serial.tools.list_ports.comports())]
+        logger.debug(connected_comports)
+        ports = [p[0] for p in connected_comports]
+        if self.device_name in ports:
+            status = "connected"
+        else:
+            devices = [p[1] for p in connected_comports]
+            messages = ["Available device:"] + devices
+        if status == "connected":
+            self.vendor_product = "telium_image"
+        else:
+            self.vendor_product = False
+        return {"status": status, "messages": messages}
