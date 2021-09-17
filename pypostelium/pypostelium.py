@@ -33,6 +33,8 @@ import pycountry
 
 logger = logging.getLogger(__name__)
 
+# Name of Payment Terminal main providers
+AUTO_DEVICE_NAMES = ["ttyACM", "Desk500"]
 
 class Driver(object):
     def __init__(self, config):
@@ -43,6 +45,15 @@ class Driver(object):
         self.retry_count = int(config.get(
             'telium_terminal_retry_count', 0))
         self.serial = False
+        if self.device_name == "auto":
+            self.device_name = self._find_auto_device_name()
+
+    def _find_auto_device_name(self):
+        connected_comports = [tuple(p) for p in list(serial.tools.list_ports.comports())]
+        logger.debug(connected_comports)
+        for port in connected_comports:
+            if any(string in port[1] for string in AUTO_DEVICE_NAMES):
+                return port[0]
 
     def serial_write(self, text):
         assert isinstance(text, str), 'text must be a string'
