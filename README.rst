@@ -71,6 +71,11 @@ Installation
 Changelog
 =========
 
+* Version 0.0.5 dated 2021-10-17
+
+  * add get_status()
+  * add auto device detection
+
 * Version 0.0.4 dated 2020-10-19
 
   * transaction_start() now returns True (success) or False (failure)
